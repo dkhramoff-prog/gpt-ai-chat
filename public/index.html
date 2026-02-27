@@ -1,0 +1,1764 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Чат - Бесплатный умный ассистент на основе GPT</title>
+    <!-- Подключаем шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- KaTeX для формул -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+            /* Светлая тема */
+            body.light-theme {
+                background: #f8fafc;
+                color: #0f172a;
+            }
+
+                body.light-theme .navbar {
+                    background: rgba(255, 255, 255, 0.3);
+                    border-bottom-color: rgba(0, 0, 0, 0.05);
+                }
+
+                    body.light-theme .navbar.scrolled {
+                        background: rgba(255, 255, 255, 0.8);
+                    }
+
+                body.light-theme .logo {
+                    background: linear-gradient(135deg, #0f172a, #9333ea);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                }
+
+                body.light-theme .nav-btn.login {
+                    border-color: rgba(0, 0, 0, 0.2);
+                    color: #0f172a;
+                }
+
+                body.light-theme .hero-description {
+                    color: rgba(15, 23, 42, 0.7);
+                }
+
+                body.light-theme .hero-btn.secondary {
+                    border-color: rgba(0, 0, 0, 0.2);
+                    color: #0f172a;
+                }
+
+                body.light-theme .feature-card {
+                    background: rgba(255, 255, 255, 0.7);
+                    border-color: rgba(0, 0, 0, 0.1);
+                }
+
+                body.light-theme .feature-description {
+                    color: rgba(15, 23, 42, 0.7);
+                }
+
+                body.light-theme .section-subtitle {
+                    color: rgba(15, 23, 42, 0.6);
+                }
+
+                body.light-theme .demo-preview {
+                    background: rgba(255, 255, 255, 0.7);
+                    border-color: rgba(0, 0, 0, 0.1);
+                }
+
+                body.light-theme .demo-bubble {
+                    background: rgba(0, 0, 0, 0.05);
+                    color: #0f172a;
+                }
+
+                    body.light-theme .demo-bubble.user {
+                        color: white;
+                    }
+
+                body.light-theme .demo-text {
+                    color: rgba(15, 23, 42, 0.7);
+                }
+
+                body.light-theme .stat-label {
+                    color: rgba(15, 23, 42, 0.5);
+                }
+
+                body.light-theme .about-card {
+                    background: rgba(255, 255, 255, 0.7);
+                    border-color: rgba(0, 0, 0, 0.1);
+                }
+
+                body.light-theme .about-description {
+                    color: rgba(15, 23, 42, 0.7);
+                }
+
+                body.light-theme .cta-description {
+                    color: rgba(15, 23, 42, 0.7);
+                }
+
+                body.light-theme .footer {
+                    border-top-color: rgba(0, 0, 0, 0.05);
+                    color: rgba(15, 23, 42, 0.5);
+                }
+
+                body.light-theme .footer-links a {
+                    color: rgba(15, 23, 42, 0.5);
+                }
+
+                    body.light-theme .footer-links a:hover {
+                        color: #9333ea;
+                    }
+
+        /* Кнопка переключения темы */
+        .theme-toggle {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 3rem;
+            padding: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+            .theme-btn:hover {
+                transform: scale(1.1);
+                background: rgba(255, 255, 255, 0.1);
+                color: white;
+            }
+
+            .theme-btn.active {
+                background: #9333ea;
+                color: white;
+                box-shadow: 0 0 20px #9333ea;
+            }
+
+        body.light-theme .theme-btn {
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+            body.light-theme .theme-btn:hover {
+                background: rgba(0, 0, 0, 0.1);
+                color: black;
+            }
+
+            body.light-theme .theme-btn.active {
+                background: #9333ea;
+                color: white;
+            }
+
+        /* Кастомный курсор (упрощенный, без фризов) */
+        .cursor {
+            width: 8px;
+            height: 8px;
+            background: #9333ea;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s ease, height 0.2s ease, background 0.2s ease;
+            mix-blend-mode: normal;
+            will-change: transform;
+        }
+
+            .cursor.hover {
+                width: 16px;
+                height: 16px;
+                background: #3b82f6;
+                mix-blend-mode: normal;
+            }
+
+        body.light-theme .cursor {
+            background: #9333ea;
+        }
+
+        /* 3D градиентный фон */
+        #gradient-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        /* Анимации появления при скролле */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+            .fade-up.active {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        .fade-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+            .fade-left.active {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+        .fade-right {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+            .fade-right.active {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+        .scale-up {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+            .scale-up.active {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+        /* Навигация */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(10, 10, 10, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+            .navbar.scrolled {
+                padding: 1rem 4rem;
+                background: rgba(10, 10, 10, 0.8);
+                border-bottom-color: rgba(147, 51, 234, 0.3);
+            }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #9333ea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            padding: 0.8rem 2rem;
+            border-radius: 2rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+        }
+
+            .nav-btn.login {
+                background: transparent;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: white;
+            }
+
+                .nav-btn.login:hover {
+                    border-color: #9333ea;
+                    transform: scale(1.05);
+                }
+
+            .nav-btn.register {
+                background: linear-gradient(135deg, #9333ea, #3b82f6);
+                color: white;
+                box-shadow: 0 10px 20px -10px rgba(147, 51, 234, 0.5);
+            }
+
+                .nav-btn.register:hover {
+                    transform: scale(1.05);
+                    box-shadow: 0 15px 30px -10px rgba(147, 51, 234, 0.7);
+                }
+
+        /* Главный экран */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 0 4rem;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: rgba(147, 51, 234, 0.1);
+            border: 1px solid rgba(147, 51, 234, 0.3);
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            animation: float 3s infinite;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+            .hero-title span {
+                background: linear-gradient(135deg, #9333ea, #3b82f6, #06b6d4);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-size: 200% 200%;
+                animation: gradientShift 5s ease infinite;
+            }
+
+        .hero-description {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .hero-btn {
+            padding: 1.2rem 3rem;
+            border-radius: 3rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .hero-btn.primary {
+                background: linear-gradient(135deg, #9333ea, #3b82f6);
+                color: white;
+                box-shadow: 0 20px 30px -10px rgba(147, 51, 234, 0.5);
+            }
+
+                .hero-btn.primary::before {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: -100%;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                    transition: left 0.5s ease;
+                }
+
+                .hero-btn.primary:hover::before {
+                    left: 100%;
+                }
+
+            .hero-btn.secondary {
+                background: transparent;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                color: white;
+            }
+
+                .hero-btn.secondary:hover {
+                    border-color: #9333ea;
+                    transform: translateY(-2px);
+                }
+
+        /* 3D сфера */
+        .hero-sphere {
+            position: absolute;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle at 30% 30%, rgba(147, 51, 234, 0.3), transparent 70%);
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 1;
+            animation: pulse 8s infinite;
+            pointer-events: none;
+        }
+
+        /* Секция с преимуществами */
+        .features {
+            padding: 8rem 4rem;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 4rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 2rem;
+            padding: 2.5rem 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+            .feature-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(59, 130, 246, 0.1));
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .feature-card:hover {
+                transform: translateY(-10px);
+                border-color: rgba(147, 51, 234, 0.3);
+                box-shadow: 0 30px 40px -20px rgba(147, 51, 234, 0.3);
+            }
+
+                .feature-card:hover::before {
+                    opacity: 1;
+                }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .feature-description {
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Секция с демонстрацией чата */
+        .demo {
+            padding: 8rem 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .demo-content {
+            flex: 1;
+        }
+
+        .demo-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .demo-text {
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .demo-stats {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #9333ea, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        .demo-preview {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            animation: float 6s infinite;
+        }
+
+        .demo-message {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .demo-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #9333ea, #3b82f6);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .demo-bubble {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 1rem;
+            border-top-left-radius: 0;
+            max-width: 80%;
+        }
+
+            .demo-bubble.user {
+                background: linear-gradient(135deg, #9333ea, #3b82f6);
+                margin-left: auto;
+                border-top-left-radius: 1rem;
+                border-top-right-radius: 0;
+            }
+
+        /* Секция о нас */
+        .about {
+            padding: 8rem 4rem;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .about-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .about-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            animation: float 3s infinite;
+        }
+
+        .about-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .about-description {
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+        }
+
+        /* CTA секция */
+        .cta {
+            padding: 8rem 4rem;
+            text-align: center;
+        }
+
+        .cta-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-description {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        .cta-btn {
+            padding: 1.5rem 4rem;
+            background: linear-gradient(135deg, #9333ea, #3b82f6);
+            border: none;
+            border-radius: 4rem;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 20px 30px -10px rgba(147, 51, 234, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .cta-btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.5s ease;
+            }
+
+            .cta-btn:hover::before {
+                left: 100%;
+            }
+
+            .cta-btn:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 30px 40px -10px rgba(147, 51, 234, 0.7);
+            }
+
+        /* Футер */
+        .footer {
+            padding: 4rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+            .footer-links a {
+                color: rgba(255, 255, 255, 0.5);
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+
+                .footer-links a:hover {
+                    color: #9333ea;
+                }
+
+        /* Чат (изначально скрыт) */
+        #chat-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #0a0a0a;
+            z-index: 1000;
+            display: none;
+        }
+
+        body.light-theme #chat-container {
+            background: #f8fafc;
+        }
+
+        .chat-interface {
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+
+        .chat-sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.02);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        body.light-theme .chat-sidebar {
+            background: rgba(0, 0, 0, 0.02);
+            border-right-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        body.light-theme .chat-header {
+            border-bottom-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 1rem;
+        }
+
+        .chat-input-area {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+            color: white;
+            font-size: 1rem;
+        }
+
+        body.light-theme .chat-input {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #0f172a;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #9333ea;
+        }
+
+        .chat-send {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #9333ea, #3b82f6);
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .close-chat {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            cursor: pointer;
+        }
+
+        body.light-theme .close-chat {
+            background: rgba(0, 0, 0, 0.1);
+            color: #0f172a;
+        }
+
+        /* Модальное окно авторизации */
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+            .auth-modal.active {
+                display: flex;
+            }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+            padding: 3rem;
+            width: 400px;
+            position: relative;
+        }
+
+        body.light-theme .auth-card {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        body.light-theme .auth-close {
+            color: #0f172a;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
+        }
+
+        body.light-theme .auth-tabs {
+            border-bottom-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .auth-tab {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+        }
+
+        body.light-theme .auth-tab {
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        .auth-tab.active {
+            color: white;
+            position: relative;
+        }
+
+        body.light-theme .auth-tab.active {
+            color: #0f172a;
+        }
+
+        .auth-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1rem;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #9333ea, #3b82f6);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+            .auth-form.active {
+                display: block;
+            }
+
+        .auth-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        body.light-theme .auth-input {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #0f172a;
+        }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: #9333ea;
+        }
+
+        .auth-submit {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #9333ea, #3b82f6);
+            border: none;
+            border-radius: 1rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Анимации */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem 2rem;
+            }
+
+            .hero {
+                padding: 0 2rem;
+            }
+
+            .features, .demo, .about, .cta {
+                padding: 4rem 2rem;
+            }
+
+            .demo {
+                flex-direction: column;
+            }
+
+            .theme-toggle {
+                bottom: 1rem;
+                right: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Кастомный курсор (упрощенный) -->
+    <div class="cursor" id="cursor"></div>
+
+    <!-- Кнопка переключения темы -->
+    <div class="theme-toggle">
+        <button class="theme-btn active" onclick="setTheme('dark')" id="theme-dark">🌙</button>
+        <button class="theme-btn" onclick="setTheme('light')" id="theme-light">☀️</button>
+    </div>
+
+    <!-- Навигация -->
+    <nav class="navbar" id="navbar">
+        <div class="logo">AI Chat</div>
+        <div class="nav-buttons">
+            <button class="nav-btn login" onclick="openAuthModal('login')">Войти</button>
+            <button class="nav-btn register" onclick="openAuthModal('register')">Регистрация</button>
+        </div>
+    </nav>
+
+    <!-- Главный экран -->
+    <section class="hero">
+        <div class="hero-sphere"></div>
+        <div class="hero-content fade-up">
+            <div class="hero-badge">⚡ Полностью бесплатно</div>
+            <h1 class="hero-title">
+                Общайтесь с <span>искусственным<br>интеллектом</span> как с человеком
+            </h1>
+            <p class="hero-description">
+                Наш AI чат понимает контекст, решает сложные задачи и помогает вам быть продуктивнее. Поддержка математики, кода и Markdown.
+            </p>
+            <div class="hero-buttons">
+                <button class="hero-btn primary" onclick="openAuthModal('register')">Начать бесплатно</button>
+                <button class="hero-btn secondary" onclick="scrollToFeatures()">Узнать больше</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция с преимуществами -->
+    <section class="features" id="features">
+        <h2 class="section-title fade-up">Почему выбирают нас</h2>
+        <p class="section-subtitle fade-up">Мощный функционал, который выделяет нас среди других</p>
+
+        <div class="features-grid">
+            <div class="feature-card fade-left">
+                <div class="feature-icon">🧠</div>
+                <h3 class="feature-title">GPT-3.5 Turbo</h3>
+                <p class="feature-description">Самый современный искусственный интеллект с глубоким пониманием контекста и естественными ответами</p>
+            </div>
+
+            <div class="feature-card fade-up">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">Математика и формулы</h3>
+                <p class="feature-description">Поддержка LaTeX, дробей, степеней, индексов и сложных математических выражений</p>
+            </div>
+
+            <div class="feature-card fade-right">
+                <div class="feature-icon">💻</div>
+                <h3 class="feature-title">Markdown и код</h3>
+                <p class="feature-description">Форматирование текста, таблицы, списки и подсветка синтаксиса для всех языков программирования</p>
+            </div>
+
+            <div class="feature-card fade-left">
+                <div class="feature-icon">⚡</div>
+                <h3 class="feature-title">Мгновенные ответы</h3>
+                <p class="feature-description">Быстрая обработка запросов и генерация ответов в реальном времени</p>
+            </div>
+
+            <div class="feature-card fade-up">
+                <div class="feature-icon">🔒</div>
+                <h3 class="feature-title">Безопасность</h3>
+                <p class="feature-description">Ваши данные защищены, история чатов сохраняется только в вашем аккаунте</p>
+            </div>
+
+            <div class="feature-card fade-right">
+                <div class="feature-icon">🌙</div>
+                <h3 class="feature-title">Темная тема</h3>
+                <p class="feature-description">Стильный интерфейс с поддержкой темной и светлой темы, анимациями за курсором</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Демонстрация чата -->
+    <section class="demo">
+        <div class="demo-content fade-left">
+            <h2 class="demo-title">Умный чат, который понимает математику</h2>
+            <p class="demo-text">
+                Наш AI не просто отвечает на вопросы — он решает уравнения, строит графики и объясняет сложные концепции простым языком. Поддержка LaTeX формул делает общение максимально наглядным.
+            </p>
+            <div class="demo-stats">
+                <div class="stat-item">
+                    <div class="stat-number">99%</div>
+                    <div class="stat-label">Точность ответов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0.5с</div>
+                    <div class="stat-label">Среднее время</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Языков программирования</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-preview fade-right">
+            <div class="demo-message">
+                <div class="demo-avatar">U</div>
+                <div class="demo-bubble user">
+                    Реши уравнение: x² + 5x + 6 = 0
+                </div>
+            </div>
+            <div class="demo-message">
+                <div class="demo-avatar">A</div>
+                <div class="demo-bubble">
+                    Решим уравнение $x^2 + 5x + 6 = 0$:<br>
+                    $D = 5^2 - 4·1·6 = 25 - 24 = 1$<br>
+                    $x₁ = (-5 + √1)/2 = -2$<br>
+                    $x₂ = (-5 - √1)/2 = -3$<br>
+                    Ответ: $x₁ = -2$, $x₂ = -3$
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Секция о нас -->
+    <section class="about">
+        <h2 class="section-title fade-up">Почему мы это делаем</h2>
+        <p class="section-subtitle fade-up">Искусственный интеллект должен быть доступен каждому</p>
+
+        <div class="about-grid">
+            <div class="about-card scale-up">
+                <div class="about-icon">❤️</div>
+                <h3 class="about-title">Сделано с любовью</h3>
+                <p class="about-description">Мы создали этот сервис, чтобы помочь людям учиться, работать и творить с помощью AI</p>
+            </div>
+
+            <div class="about-card scale-up">
+                <div class="about-icon">🌍</div>
+                <h3 class="about-title">Для всех</h3>
+                <p class="about-description">Никаких ограничений — полный функционал доступен каждому совершенно бесплатно</p>
+            </div>
+
+            <div class="about-card scale-up">
+                <div class="about-icon">🚀</div>
+                <h3 class="about-title">Постоянное развитие</h3>
+                <p class="about-description">Мы регулярно обновляем модели и добавляем новые возможности для вас</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA секция -->
+    <section class="cta">
+        <h2 class="cta-title fade-up">Готовы начать?</h2>
+        <p class="cta-description fade-up">Присоединяйтесь к тысячам пользователей, которые уже используют AI чат для работы и учебы</p>
+        <button class="cta-btn scale-up" onclick="openAuthModal('register')">Начать бесплатно →</button>
+    </section>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="copyright">© 2026 AI Chat. Все права защищены.</div>
+        <div class="footer-links">
+            <a href="#">О нас</a>
+            <a href="#">Блог</a>
+            <a href="#">Документация</a>
+            <a href="#">Контакты</a>
+        </div>
+    </footer>
+
+    <!-- Чат (изначально скрыт) -->
+    <div id="chat-container">
+        <div class="chat-interface">
+            <div class="chat-sidebar">
+                <div style="margin-bottom: 2rem;">
+                    <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">AI Чат</div>
+                    <button class="nav-btn register" style="width: 100%;" onclick="newChat()">+ Новый чат</button>
+                </div>
+                <div class="history-list" style="flex: 1; overflow-y: auto;" id="history-list">
+                    <!-- История будет здесь -->
+                </div>
+                <button class="nav-btn login" style="width: 100%; margin-top: 1rem;" onclick="logout()">Выйти</button>
+            </div>
+            <div class="chat-main">
+                <div class="chat-header">
+                    <div class="chat-title">AI Ассистент</div>
+                    <button class="close-chat" onclick="closeChat()">× Закрыть</button>
+                </div>
+                <div class="chat-messages" id="messages"></div>
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="message-input" placeholder="Напишите сообщение..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                    <button class="chat-send" onclick="sendMessage()">→</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно авторизации -->
+    <div class="auth-modal" id="auth-modal">
+        <div class="auth-card scale-up">
+            <button class="auth-close" onclick="closeAuthModal()">×</button>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')">Вход</button>
+                <button class="auth-tab" onclick="switchAuthTab('register')">Регистрация</button>
+            </div>
+
+            <div id="login-form" class="auth-form active">
+                <input type="text" class="auth-input" id="login-username" placeholder="Имя пользователя">
+                <input type="password" class="auth-input" id="login-password" placeholder="Пароль">
+                <button class="auth-submit" onclick="login()">Войти</button>
+            </div>
+
+            <div id="register-form" class="auth-form">
+                <input type="text" class="auth-input" id="register-username" placeholder="Имя пользователя">
+                <input type="password" class="auth-input" id="register-password" placeholder="Пароль">
+                <button class="auth-submit" onclick="register()">Зарегистрироваться</button>
+            </div>
+
+            <div id="auth-error" style="color: #ef4444; text-align: center; margin-top: 1rem; display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Подключаем библиотеки -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <script>
+        // Настройка marked
+        marked.setOptions({
+            breaks: true,
+            gfm: true
+        });
+
+        // Переменные
+        let isSending = false;
+        let messagesContainer = document.getElementById('messages');
+        let currentMessages = [];
+        let currentChatId = Date.now();
+        let isAuthenticated = false;
+        let currentUser = null;
+
+        // Кастомный курсор (упрощенный, без фризов)
+        const cursor = document.getElementById('cursor');
+
+        // Используем throttle для оптимизации производительности
+        let lastMove = 0;
+        document.addEventListener('mousemove', (e) => {
+            const now = Date.now();
+            if (now - lastMove < 10) return; // Ограничиваем до 100fps
+            lastMove = now;
+
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // Эффект наведения на кликабельные элементы
+        document.querySelectorAll('button, a, .feature-card, .nav-btn, .hero-btn, .pricing-card, .about-card').forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // Переключение темы
+        function setTheme(theme) {
+            if (theme === 'light') {
+                document.body.classList.add('light-theme');
+                document.getElementById('theme-dark').classList.remove('active');
+                document.getElementById('theme-light').classList.add('active');
+            } else {
+                document.body.classList.remove('light-theme');
+                document.getElementById('theme-light').classList.remove('active');
+                document.getElementById('theme-dark').classList.add('active');
+            }
+        }
+
+        // Эффект на navbar при скролле
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Анимации появления при скролле
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-up, .fade-left, .fade-right, .scale-up').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Плавный скролл к секциям
+        function scrollToFeatures() {
+            document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Модальное окно авторизации
+        function openAuthModal(tab) {
+            document.getElementById('auth-modal').classList.add('active');
+            switchAuthTab(tab);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.remove('active');
+        }
+
+        function switchAuthTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+
+            if (tab === 'login') {
+                document.querySelectorAll('.auth-tab')[0].classList.add('active');
+                document.getElementById('login-form').classList.add('active');
+            } else {
+                document.querySelectorAll('.auth-tab')[1].classList.add('active');
+                document.getElementById('register-form').classList.add('active');
+            }
+        }
+
+        // Регистрация
+        async function register() {
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+
+            if (!username || !password) {
+                showAuthError('Заполните все поля');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    closeAuthModal();
+                    openChat();
+                    addWelcomeMessage();
+                } else {
+                    showAuthError(data.error);
+                }
+            } catch (error) {
+                showAuthError('Ошибка соединения с сервером');
+            }
+        }
+
+        // Логин
+        async function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            if (!username || !password) {
+                showAuthError('Заполните все поля');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    closeAuthModal();
+                    openChat();
+                    await loadHistory();
+                } else {
+                    showAuthError(data.error);
+                }
+            } catch (error) {
+                showAuthError('Ошибка соединения с сервером');
+            }
+        }
+
+        function showAuthError(message) {
+            const errorDiv = document.getElementById('auth-error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // Открыть чат
+        function openChat() {
+            document.querySelector('.navbar').style.display = 'none';
+            document.querySelector('.hero').style.display = 'none';
+            document.querySelector('.features').style.display = 'none';
+            document.querySelector('.demo').style.display = 'none';
+            document.querySelector('.about').style.display = 'none';
+            document.querySelector('.cta').style.display = 'none';
+            document.querySelector('.footer').style.display = 'none';
+            document.getElementById('chat-container').style.display = 'block';
+        }
+
+        function closeChat() {
+            document.querySelector('.navbar').style.display = 'flex';
+            document.querySelector('.hero').style.display = 'flex';
+            document.querySelector('.features').style.display = 'block';
+            document.querySelector('.demo').style.display = 'flex';
+            document.querySelector('.about').style.display = 'block';
+            document.querySelector('.cta').style.display = 'block';
+            document.querySelector('.footer').style.display = 'flex';
+            document.getElementById('chat-container').style.display = 'none';
+        }
+
+        // Выход
+        async function logout() {
+            await fetch('/api/logout', { method: 'POST' });
+            closeChat();
+        }
+
+        // Приветственное сообщение
+        function addWelcomeMessage() {
+            const welcomeText = `Здравствуйте! Я AI ассистент. Чем могу помочь?`;
+            addMessage(welcomeText, 'assistant');
+        }
+
+        // Функция для преобразования (2^1) в $2^{1}$ и т.д.
+        function processMathNotation(content) {
+            return content
+                .replace(/\((\d+)\^(\d+)\)/g, '$$$1^{$2}$$')
+                .replace(/\((\d+)_(\d+)\)/g, '$$$1_{$2}$$')
+                .replace(/\(([a-zA-Z])\^(\d+)\)/g, '$$$1^{$2}$$')
+                .replace(/\(([a-zA-Z])_(\d+)\)/g, '$$$1_{$2}$$')
+                .replace(/\(\\sqrt\{([^}]+)\}\)/g, '$\\sqrt{$1}$');
+        }
+
+        // Отправка сообщения
+        async function sendMessage() {
+            if (isSending) return;
+
+            const input = document.getElementById('message-input');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            addMessage(message, 'user');
+            input.value = '';
+
+            const userMessage = {
+                role: 'user',
+                content: message,
+                chatId: currentChatId,
+                timestamp: new Date().toISOString()
+            };
+            currentMessages.push(userMessage);
+
+            showTypingIndicator();
+
+            isSending = true;
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                if (!response.ok) throw new Error('Network error');
+
+                const data = await response.json();
+
+                removeTypingIndicator();
+
+                if (data.response) {
+                    const processedResponse = processMathNotation(data.response);
+                    addMessage(processedResponse, 'assistant');
+
+                    const assistantMessage = {
+                        role: 'assistant',
+                        content: processedResponse,
+                        chatId: currentChatId,
+                        timestamp: new Date().toISOString()
+                    };
+                    currentMessages.push(assistantMessage);
+
+                    updateHistoryList();
+                } else {
+                    addMessage('Извините, произошла ошибка. Попробуйте еще раз.', 'assistant');
+                }
+            } catch (error) {
+                removeTypingIndicator();
+                addMessage('Ошибка соединения. Проверьте подключение к серверу.', 'assistant');
+            } finally {
+                isSending = false;
+            }
+        }
+
+        // Добавить сообщение
+        function addMessage(content, role) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.style.cssText = `
+                    display: flex;
+                    gap: 1rem;
+                    margin-bottom: 1.5rem;
+                    animation: slideIn 0.3s ease-out;
+                `;
+
+            const time = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+            let htmlContent;
+            try {
+                htmlContent = marked.parse(content);
+            } catch (e) {
+                htmlContent = content.replace(/\n/g, '<br>');
+            }
+
+            messageDiv.innerHTML = `
+                    <div style="width: 36px; height: 36px; border-radius: 0.75rem; background: linear-gradient(135deg, #9333ea, #3b82f6); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">${role === 'user' ? 'U' : 'A'}</div>
+                    <div style="flex: 1;">
+                        <div style="background: ${role === 'user' ? 'linear-gradient(135deg, #9333ea, #3b82f6)' : 'rgba(255,255,255,0.05)'}; padding: 1rem; border-radius: 1rem; border-top-left-radius: ${role === 'user' ? '1rem' : '0'}; border-top-right-radius: ${role === 'user' ? '0' : '1rem'}; max-width: 80%; ${role === 'user' ? 'margin-left: auto;' : ''} color: white;">${htmlContent}</div>
+                        <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 0.25rem; ${role === 'user' ? 'text-align: right;' : ''}">${time}</div>
+                    </div>
+                `;
+
+            messagesContainer.appendChild(messageDiv);
+
+            setTimeout(() => {
+                try {
+                    renderMathInElement(messageDiv, {
+                        delimiters: [
+                            { left: '$$', right: '$$', display: true },
+                            { left: '$', right: '$', display: false }
+                        ],
+                        throwOnError: false
+                    });
+                } catch (e) { }
+            }, 10);
+
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Индикатор печатания
+        function showTypingIndicator() {
+            const indicator = document.createElement('div');
+            indicator.id = 'typing-indicator';
+            indicator.style.cssText = `
+                    display: flex;
+                    gap: 0.5rem;
+                    padding: 1rem;
+                    background: rgba(255,255,255,0.05);
+                    border-radius: 1rem;
+                    width: fit-content;
+                    margin-bottom: 1.5rem;
+                `;
+            indicator.innerHTML = `
+                    <div style="width: 8px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 50%; animation: typing 1.4s infinite;"></div>
+                    <div style="width: 8px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 50%; animation: typing 1.4s infinite; animation-delay: 0.2s;"></div>
+                    <div style="width: 8px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 50%; animation: typing 1.4s infinite; animation-delay: 0.4s;"></div>
+                `;
+            messagesContainer.appendChild(indicator);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) indicator.remove();
+        }
+
+        // Загрузить историю
+        async function loadHistory() {
+            try {
+                const response = await fetch('/api/history');
+                const history = await response.json();
+
+                messagesContainer.innerHTML = '';
+                currentMessages = history;
+
+                if (history.length === 0) {
+                    addWelcomeMessage();
+                } else {
+                    history.forEach(msg => {
+                        addMessage(msg.content, msg.role);
+                    });
+                }
+
+                updateHistoryList();
+            } catch (error) {
+                messagesContainer.innerHTML = '';
+                addWelcomeMessage();
+            }
+        }
+
+        // Обновить список истории
+        function updateHistoryList() {
+            const historyList = document.getElementById('history-list');
+            if (!historyList) return;
+
+            historyList.innerHTML = '';
+
+            if (currentMessages.length === 0) {
+                historyList.innerHTML = '<div style="opacity: 0.5; text-align: center; padding: 1rem;">Нет истории</div>';
+                return;
+            }
+
+            // Группируем по диалогам
+            const dialogs = [];
+            let currentDialog = [];
+
+            for (let i = 0; i < currentMessages.length; i++) {
+                currentDialog.push(currentMessages[i]);
+                if (i === currentMessages.length - 1 || (i % 2 === 1)) {
+                    dialogs.push([...currentDialog]);
+                    currentDialog = [];
+                }
+            }
+
+            dialogs.slice(-10).reverse().forEach((dialog) => {
+                const firstUserMsg = dialog.find(msg => msg.role === 'user');
+                const previewText = firstUserMsg
+                    ? (firstUserMsg.content.length > 25
+                        ? firstUserMsg.content.substring(0, 25) + '...'
+                        : firstUserMsg.content)
+                    : 'Новый диалог';
+
+                const item = document.createElement('div');
+                item.style.cssText = `
+                        padding: 0.75rem;
+                        background: rgba(255,255,255,0.05);
+                        border-radius: 0.75rem;
+                        margin-bottom: 0.5rem;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        font-size: 0.9rem;
+                    `;
+                item.innerHTML = previewText;
+                item.onmouseover = () => item.style.background = 'rgba(255,255,255,0.1)';
+                item.onmouseout = () => item.style.background = 'rgba(255,255,255,0.05)';
+                item.onclick = () => {
+                    messagesContainer.innerHTML = '';
+                    dialog.forEach(msg => addMessage(msg.content, msg.role));
+                };
+                historyList.appendChild(item);
+            });
+        }
+
+        // Новый чат
+        function newChat() {
+            currentChatId = Date.now();
+            messagesContainer.innerHTML = '';
+            addWelcomeMessage();
+        }
+
+        // Очистить историю
+        async function clearHistory() {
+            if (!confirm('Очистить всю историю чата?')) return;
+
+            try {
+                await fetch('/api/clear-history', { method: 'POST' });
+                messagesContainer.innerHTML = '';
+                currentMessages = [];
+                currentChatId = Date.now();
+                addWelcomeMessage();
+                updateHistoryList();
+            } catch (error) { }
+        }
+
+        // Проверка авторизации
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/check-auth');
+                const data = await response.json();
+
+                if (data.authenticated) {
+                    isAuthenticated = true;
+                    currentUser = data.username;
+                }
+            } catch (error) { }
+        }
+
+        // Добавляем стили для анимаций
+        const style = document.createElement('style');
+        style.textContent = `
+                @keyframes typing {
+                    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+                    30% { transform: translateY(-10px); opacity: 1; }
+                }
+                @keyframes slideIn {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            `;
+        document.head.appendChild(style);
+
+        // Проверяем авторизацию
+        checkAuth();
+    </script>
+</body>
+</html>
