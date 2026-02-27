@@ -8,7 +8,8 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+// ⚠️ Главное исправление для Render:
+const PORT = process.env.PORT || 3000; // используем порт Render
 const HOST = '0.0.0.0'; // Важно: слушаем все интерфейсы
 
 // Middleware
@@ -290,8 +291,5 @@ app.post('/api/clear-history', (req, res) => {
 
 // Запускаем сервер на всех интерфейсах
 app.listen(PORT, HOST, () => {
-    console.log(`Server running on http://${HOST}:${PORT}/`);
-    console.log(`Local access: http://localhost:${PORT}/`);
-    console.log(`Network access: http://YOUR_IP:${PORT}/`);
-    console.log(`Forward this port to your domain via SSH tunnel`);
+    console.log(`Server running on port ${PORT}`);
 });
